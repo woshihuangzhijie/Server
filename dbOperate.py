@@ -8,14 +8,14 @@ import time
 import sendemail
 class operateMySql:
     def __init__(self):
-        self.host = 'localhost'
+        self.host = '127.0.0.1'
         self.port = 3306
         self.user = 'root'
-        self.passwd = 'qq596167'
+        self.passwd = ''
         self.db = 'reminder'
 
     # 用户注册
-    def addUser(self, user_name, user_psw, user_email,  phone_num):
+    def addUser(self, user_name, user_psw, user_email):
         db = pymysql.connect(host = self.host, port = self.port, user = self.user, passwd = self.passwd, db = self.db, charset='UTF8')
         cur = db.cursor()
         # 查询用户是否已存在
@@ -26,13 +26,13 @@ class operateMySql:
         # 用户已存在
         if cur.fetchall():
             db.close()
-            return -1 #("用户已存在,请直接登录")
+            return 0 #("用户已存在,请直接登录")
         else:
         # 用户不存在
             # SQL 插入语句
             sql =("""INSERT INTO user(user_name,
-                user_psw, user_email,  phone_num)
-                VALUES ('%s', '%s', '%s', '%s')"""%(user_name, user_psw, user_email, phone_num))
+                user_psw, user_email, token)
+                VALUES ('%s', '%s', '%s', '%s')"""%(user_name, user_psw, user_email, '1'))
             try:
                 # 执行sql语句
                 cur.execute(sql)
@@ -47,55 +47,71 @@ class operateMySql:
                 return 0 #("注册失败")
 
     # 用户登录
-    def login(self, user_email, user_psw):
+    def login(self, user_name, user_email, user_psw, flag):
         db = pymysql.connect(host = self.host, port = self.port, user = self.user, passwd = self.passwd, db = self.db, charset='UTF8')
         cur = db.cursor()
         # 查询用户是否存在
-        sql = ("""SELECT * FROM user WHERE user_email =
+        if flag == 0:
+            sql = ("""SELECT * FROM user WHERE user_email =
                 '%s' and user_psw = '%s' """% (user_email, user_psw))
-        
+        else:
+             sql = ("""SELECT * FROM user WHERE user_name =
+                '%s' and user_psw = '%s' """ % (user_name, user_psw))
         # 执行sql语句
         cur.execute(sql)
         if cur.fetchall():
             # 用户存在
+            if flag == 0:
+                op = ("""UPDATE user SET token = '%s' WHERE user_email =
+                '%s' and user_psw = '%s' """ % ('1', user_email, user_psw))
+            else:
+                op = ("""UPDATE user SET token = '%s' WHERE user_name =
+                '%s' and user_psw = '%s' """ % ('1', user_name, user_psw))
+            cur.execute(op)
             db.close()
             return 1 # ("登陆成功")
         else:
             db.close()
             return 0 #("邮箱或密码错误，请重新登录")
-
     # 添加事件
-
-    def addEvent(self, user_email, time, email_active, clock_active, phone_active, description):
+    
+    def modifyEvent(self,user_name, email, reminder, title, record, update_time, alarm_time, action_time, if_alarm, if_email):
         db = pymysql.connect(host = self.host, port = self.port, user = self.user, passwd = self.passwd, db = self.db, charset='UTF8')
         cur = db.cursor()
-        # 随机生成事件id
-        while True:
-            event_id = ''.join(random.sample(string.ascii_letters + string.digits, 8))
-            # 查询事件的的id
-            cur.execute("""select * from event where event_id = '%s'"""%(event_id))
-            if cur.fetchall():
-                pass
-            else:
-                break
-        print(event_id)
-        # 添加事件
-        sql = ("""insert into event(event_id, user_email, time, description, email_active, clock_active, phone_active) values('%s', '%s', '%s', '%s', '%d', '%d', '%d')"""
-               % (event_id, user_email, time, description, email_active, clock_active, phone_active))
+        # 查询事件的的id
+        if len(email) > 0:
+            cur.execute("""select * from event where user_email = '%s' and  reminder = '%s'""" % (email, reminder))
+        else:
+            cur.execute("""select * from user where user_name = '%s' """ % (user_name))
+            r = cur.fetchall()[0]
+            print(r)
+            email = r[2]
+            cur.execute("""select * from event where user_email = '%s' and  reminder = '%s'""" % (r[2], reminder))
+        if cur.fetchall():
+            # 修改事件
+             sql = ("""UPDATE event SET title = '%s', record = '%s', update_time = '%s',alarm_time = '%s',action_time = '%s',
+             if_alarm = '%s', if_email = '%s' where user_email = '%s' and  reminder = '%s'""" % (title, record, update_time, 
+             alarm_time, action_time, if_alarm, if_email, email, reminder))
+        else:
+            # 添加事件
+            print((email, reminder, title, record, update_time, alarm_time, action_time, if_alarm, if_email))
+            sql = ("""INSERT into event(user_email, reminder, title, record, update_time, alarm_time, action_time, if_alarm, if_email) values('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s','%s')"""
+                    % (email, reminder, title, record, update_time, alarm_time, action_time, if_alarm, if_email))
         try:
             cur.execute(sql)
             db.commit()
             db.close()
-            return event_id #("创建成功")
+            return 1 #("修改成功")
         except:
             db.rollback()
             db.close()
-            return '0' #("创建失败")
+            return 0 #("创建失败")
 
-    def subEvent(self, event_id):
+    def subEvent(self,user_email, reminder):
         db = pymysql.connect(host = self.host, port = self.port, user = self.user, passwd = self.passwd, db = self.db, charset='UTF8')
         cur = db.cursor()
-        sql = ("""delete from event where event_id = '%s' """%(event_id))
+        sql = ("""delete from event where user_email = '%s' and reminder = '%s' """ % (
+            user_email, reminder))
         try:
             cur.execute(sql)
             db.commit()
@@ -104,7 +120,28 @@ class operateMySql:
         except:
             db.rollback()
             db.close()
-            return 0 #("删除失败")
+            return 0
+    def loadDown(self,user_name, user_email, user_psw):
+        db = pymysql.connect(host=self.host, port=self.port, user=self.user, passwd=self.passwd, db=self.db,
+                             charset='UTF8')
+        cur = db.cursor()
+        # 查询用户是否存在
+        if len(user_email) > 0:
+            sql = ("""SELECT * FROM user WHERE user_email =
+                        '%s' and user_psw = '%s' """ % (user_email, user_psw))
+        if len(user_name) > 0:
+            sql = ("""SELECT * FROM user WHERE user_name =
+                        '%s' and user_psw = '%s' """ % (user_name, user_psw))
+        cur.execute(sql)
+        res = cur.fetchall()
+        if res:
+            email = res[0][2]
+            SQL = ("""select * from event where user_email = '%s' """ % (email))
+            cur.execute(SQL)
+            event = cur.fetchall()
+            db.close()
+            return event
+
     def regQuery(self, interval = 60):
         while True:
             try:
@@ -116,17 +153,28 @@ class operateMySql:
                 cur = db.cursor()
                 # 选择时间已到的事件
                 sql = (
-                    """select * from event where UNIX_TIMESTAMP(time) = '%d' and email_active = '%d'""" % (
-                        int(time.time()), 1))
+                    """select * from event where UNIX_TIMESTAMP(alarm_time) = '%d' and if_email = '%s'""" % (
+                        int(time.time()), '1'))
                 cur.execute(sql)
                 res = cur.fetchall()
                 if res:
                     for row in res:
-                        text = row[3]
-                        email = row[1]
+                        print(row)
+                        msgto = row[0]
+                        title = row[2]
+                        alarm_time = row[5]
+                        action_time = row[6]
+                        delta = action_time - alarm_time
+                        #print(delta.days, delta.seconds)
+                        days = delta.days
+                        hours = delta.seconds // 3600
+                        minutes = delta.seconds // 60
+                        #print(hours, minutes, seconds)
+                        text = ('您好，您的事件' + title + '还有' + str(days) + '天' + str(hours)
+                            + '小时' + str(minutes) + '分就要开始了')
                         # 发送email
                         Send = sendemail.sendemail()
-                        Send.sendto(email, text)
+                        Send.sendto(msgto, text)
                 else:
                     pass
                 db.close()
@@ -137,7 +185,8 @@ def main():
     # print(s.addUser("john", "123@134.com", "1234"))
     # print(s.login("123@134.com", "1234"))
     # print(s.login("123@134.com", "123"))
-    print(s.addEvent("123@134.com", "qilai","2006-10-03 09:11:20",1,0,0))
-    print(s.subEvent("b3xQOIwN"))
+    #self, email, reminder, title, record, update_time, alarm_time, action_time, if_alarm, if_email):
+    print(s.regQuery())
+    #print(s.subEvent("b3xQOIwN"))
 if __name__ == '__main__':
     main()

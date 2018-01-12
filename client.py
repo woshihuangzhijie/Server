@@ -16,14 +16,14 @@ def test_client(host, port):
     try:
         # 发送消息
         while True:          
-            msg = input("Please input:")
+            msg = input()
+            print(msg)
             sock.sendall(msg.encode())
-            
             if msg=="quit" or msg=="exit":
                 break            
             
             # 接收消息
-            data = sock.recv(1024).decode()
+            data = sock.recv(1024)
             print("Message from server: {0}".format(data))
         sock.close()
     # except socket.errno as e:

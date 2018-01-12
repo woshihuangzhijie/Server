@@ -1,0 +1,62 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+__init__	../dbOperate.py	/^    def __init__(self):$/;"	kind:member	line:10
+__init__	../sendemail.py	/^    def __init__(self):$/;"	kind:member	line:8
+addEvent	../dbOperate.py	/^    def addEvent(self, user_email, time, email_active, clock_active, phone_active, description):$/;"	kind:member	line:68
+addUser	../dbOperate.py	/^    def addUser(self, user_name, user_psw, user_email,  phone_num):$/;"	kind:member	line:18
+argparse	../client.py	/^import argparse$/;"	kind:namespace	line:4
+client.py	../client.py	1;"	kind:file	line:1
+conn	../test.py	/^conn = pymysql.connect(host='0.0.0.0', port=3306,user='root',passwd='qq596167',db='reminder',charset='UTF8')$/;"	kind:variable	line:2
+cur	../test.py	/^cur = conn.cursor()$/;"	kind:variable	line:3
+dbOperate	../server.py	/^import dbOperate$/;"	kind:namespace	line:5
+dbOperate.py	../dbOperate.py	1;"	kind:file	line:1
+email	../sendemail.py	/^import email.mime.multipart$/;"	kind:namespace	line:3
+email	../sendemail.py	/^import email.mime.text$/;"	kind:namespace	line:4
+fun1	../setime.py	/^def fun1(x, y):$/;"	kind:function	line:3
+fun2	../setime.py	/^def fun2(x):$/;"	kind:function	line:7
+getquery	../server.py	/^def getquery():$/;"	kind:function	line:55
+given_args	../client.py	/^    given_args = parser.parse_args()$/;"	kind:variable	line:40
+host	../client.py	/^    host = given_args.host$/;"	kind:variable	line:41
+login	../dbOperate.py	/^    def login(self, user_email, user_psw):$/;"	kind:member	line:50
+main	../dbOperate.py	/^def main():$/;"	kind:function	line:134
+main	../sendemail.py	/^def main():$/;"	kind:function	line:30
+main	../server.py	/^def main():$/;"	kind:function	line:76
+mime	../sendemail.py	/^import email.mime.multipart$/;"	kind:namespace	line:3
+mime	../sendemail.py	/^import email.mime.text$/;"	kind:namespace	line:4
+multipart	../sendemail.py	/^import email.mime.multipart$/;"	kind:namespace	line:3
+operateMySql	../dbOperate.py	/^class operateMySql:$/;"	kind:class	line:9
+parser	../client.py	/^    parser = argparse.ArgumentParser(description="Socket Server Example")$/;"	kind:variable	line:37
+port	../client.py	/^    port = given_args.port$/;"	kind:variable	line:42
+pymysql	../dbOperate.py	/^import pymysql$/;"	kind:namespace	line:4
+pymysql	../test.py	/^import pymysql$/;"	kind:namespace	line:1
+random	../dbOperate.py	/^import random$/;"	kind:namespace	line:5
+regQuery	../dbOperate.py	/^    def regQuery(self, interval = 60):$/;"	kind:member	line:107
+s	../setime.py	/^s = threading.Thread(target=fun2, args= (x,))$/;"	kind:variable	line:14
+sendemail	../dbOperate.py	/^import sendemail$/;"	kind:namespace	line:8
+sendemail	../sendemail.py	/^class sendemail:$/;"	kind:class	line:7
+sendemail.py	../sendemail.py	1;"	kind:file	line:1
+sendto	../sendemail.py	/^    def sendto(self, msgTo, text):$/;"	kind:member	line:13
+server.py	../server.py	1;"	kind:file	line:1
+setime.py	../setime.py	1;"	kind:file	line:1
+smtplib	../sendemail.py	/^import smtplib$/;"	kind:namespace	line:2
+socket	../client.py	/^import socket$/;"	kind:namespace	line:3
+socket	../server.py	/^import socket$/;"	kind:namespace	line:3
+string	../dbOperate.py	/^import string$/;"	kind:namespace	line:6
+subEvent	../dbOperate.py	/^    def subEvent(self, event_id):$/;"	kind:member	line:94
+sys	../client.py	/^import sys$/;"	kind:namespace	line:2
+sys	../server.py	/^import sys$/;"	kind:namespace	line:2
+t	../setime.py	/^t = threading.Thread(target=fun1, args=(1,1))$/;"	kind:variable	line:11
+test.py	../test.py	1;"	kind:file	line:1
+test_client	../client.py	/^def test_client(host, port):$/;"	kind:function	line:6
+test_server	../server.py	/^def test_server(port = 2592):$/;"	kind:function	line:58
+text	../sendemail.py	/^import email.mime.text$/;"	kind:namespace	line:4
+threadfun	../server.py	/^def threadfun(sock, addr):$/;"	kind:function	line:8
+threading	../server.py	/^import threading$/;"	kind:namespace	line:4
+threading	../setime.py	/^import threading$/;"	kind:namespace	line:1
+time	../dbOperate.py	/^import time$/;"	kind:namespace	line:7
+time	../setime.py	/^import time$/;"	kind:namespace	line:2
+x	../setime.py	/^x = 1$/;"	kind:variable	line:13
